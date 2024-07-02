@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-const PORT = 3000;
+const PORT = 4000;
 
 const url = process.env.MONGO_DB_URL;
 const dbName = process.env.MONGO_DB;

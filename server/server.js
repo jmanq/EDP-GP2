@@ -14,6 +14,8 @@ const dbName = process.env.MONGO_DB;
 const planetsDB = process.env.MONGO_DB_PLANETS;
 const filmsDB = process.env.MONGO_DB_FILMS;
 const charactersDB = process.env.MONGO_DB_CHARACTERS;
+const filmCharDB = process.env.MONGO_DB_FILMS_CHARACTERS;
+const filmPlanetDB = process.env.MONGO_DB_FILMS_PLANETS;
 
 
 app.get('/api/planets', async (req, res) => {
@@ -95,6 +97,33 @@ app.get('/api/planets/:id', async (req, res) => {
     } catch (err) {
         console.error('Error:', err);
         res.status(500).send('PLANET NOT FOUND');
+    }
+});
+
+
+app.get('/api/films/:id/characters', async (req, res) => {
+    try {
+        const id  = req.params.id;
+        const client = await MongoClient.connect(url);
+        const db = client.db(dbName);
+        const collection = db.collection(filmCharDB);
+        const collection2 = db.collection(charactersDB)
+        
+        // get all of the characters that appeared in the selected films
+        const result = await collection.find({film_id: parseInt(id)}).toArray();
+        let allChars = [];
+               
+        // iterate through result, get characters from their IDs, and append to allChars array
+        for (let i = 0; i < result.length; i++) {
+            let charID = result[i].character_id;
+            const result2 = await collection2.find({ id: parseInt(charID) }).toArray();
+            allChars.push(result2[0]);
+        }
+
+        res.json(allChars);
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).send('FILM/CHARACTER NOT FOUND');
     }
 });
 

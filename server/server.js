@@ -143,7 +143,7 @@ app.get('/api/films/:id/planets', async (req, res) => {
         const result = await collection.find({film_id: parseInt(id)}).toArray();
         let allPlanets = [];
                
-        // iterate through result, get characters from their IDs, and append to allPlanets array
+        // iterate through result, get planets from their IDs, and append to allPlanets array
         for (let i = 0; i < result.length; i++) {
             let planetID = result[i].planet_id;
             const result2 = await collection2.find({ id: parseInt(planetID) }).toArray();
